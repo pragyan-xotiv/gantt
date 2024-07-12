@@ -4,7 +4,7 @@ import Bar from "./bar";
 import Arrow from "./arrow";
 import Popup from "./popup";
 
-import "./gantt.scss";
+// import "./gantt.scss";
 
 const VIEW_MODE = {
   HOUR: "Hour",
