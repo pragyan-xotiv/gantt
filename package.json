@@ -3,6 +3,7 @@
   "version": "0.6.1",
   "description": "A simple, modern, interactive gantt library for the web",
   "main": "src/index.js",
+  "types": "index.d.ts",
   "scripts": {
     "start": "yarn run dev",
     "build": "rollup -c",
@@ -44,7 +45,8 @@
     "prettier": "^2.6.2",
     "rollup": "^2.70.2",
     "rollup-plugin-sass": "^1.2.12",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^5.5.3"
   },
   "eslintIgnore": [
     "dist"
