@@ -377,6 +377,7 @@ export default class Bar {
     }
 
     update_progressbar_position() {
+        if (!this.gantt.options.progress_bar) return;
         if (this.invalid) return;
         this.$bar_progress.setAttribute('x', this.$bar.getX());
         this.$bar_progress.setAttribute(
@@ -386,6 +387,7 @@ export default class Bar {
     }
 
     update_label_position() {
+        if (!this.gantt.options.label) return;
         const bar = this.$bar,
             label = this.group.querySelector('.bar-label');
 
