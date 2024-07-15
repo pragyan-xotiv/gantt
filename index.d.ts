@@ -25,6 +25,7 @@ declare namespace Gantt {
         dependencies: string;
         type: TaskType;
         custom_class?: string | undefined;
+        additional_class?: string | undefined;
     }
 
     interface EnrichedTask extends Task {
