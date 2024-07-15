@@ -93,7 +93,7 @@ export default class Bar {
     }
 
     draw_progress_bar() {
-        if (this.invalid) return;
+        if (this.invalid || !this.gantt.options.progress_bar) return;
         this.$bar_progress = createSVG('rect', {
             x: this.x,
             y: this.y,
@@ -109,6 +109,7 @@ export default class Bar {
     }
 
     draw_label() {
+        if (!this.gantt.options.label) return;
         createSVG('text', {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2,
