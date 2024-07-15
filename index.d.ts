@@ -14,6 +14,8 @@ declare class Gantt {
 }
 
 declare namespace Gantt {
+		type TaskType = "task" | "milestone";
+
     interface Task {
         id: string;
         name: string;
@@ -21,6 +23,7 @@ declare namespace Gantt {
         end: string;
         progress: number;
         dependencies: string;
+        type: TaskType;
         custom_class?: string | undefined;
     }
 
