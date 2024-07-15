@@ -149,7 +149,11 @@ export default class Bar {
             append_to: this.handle_group,
         });
 
-        if (this.task.progress && this.task.progress < 100) {
+        if (
+            this.gantt.options.progress_bar &&
+            this.task.progress &&
+            this.task.progress < 100
+        ) {
             this.$handle_progress = createSVG('polygon', {
                 points: this.get_progress_polygon_points().join(','),
                 class: 'handle progress',
@@ -159,6 +163,7 @@ export default class Bar {
     }
 
     get_progress_polygon_points() {
+        if (!this.gantt.options.progress_bar) return;
         const bar_progress = this.$bar_progress;
         return [
             bar_progress.getEndX() - 5,
@@ -404,6 +409,7 @@ export default class Bar {
             .setAttribute('x', bar.getEndX() - 9);
         const handle = this.group.querySelector('.handle.progress');
         handle &&
+            this.gantt.options.progress_bar &&
             handle.setAttribute('points', this.get_progress_polygon_points());
     }
 
