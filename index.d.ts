@@ -52,6 +52,8 @@ declare namespace Gantt {
         progress_bar?: boolean | undefined;
         label?: boolean | undefined;
         on_click?: ((task: EnrichedTask) => void) | undefined;
+        on_mouseover?: ((task: EnrichedTask) => void) | undefined;
+        on_mouseout?: ((task: EnrichedTask) => void) | undefined;
         on_date_change?: ((task: EnrichedTask, start: Date, end: Date) => void) | undefined;
         on_progress_change?: ((task: EnrichedTask, progress: number) => void) | undefined;
         on_view_change?: ((mode: viewMode) => void) | undefined;

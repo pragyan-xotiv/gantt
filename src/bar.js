@@ -200,6 +200,16 @@ export default class Bar {
 
             this.gantt.trigger_event('click', [this.task]);
         });
+
+        $.on(this.group, 'mouseover', (e) => {
+            this.show_popup();
+            this.gantt.trigger_event('mouseover', [this.task]);
+        });
+
+        $.on(this.group, 'mouseout', (e) => {
+            this.gantt.hide_popup();
+            this.gantt.trigger_event('mouseout', [this.task]);
+        });
     }
 
     show_popup() {
