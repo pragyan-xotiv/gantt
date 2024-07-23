@@ -24,6 +24,8 @@ declare namespace Gantt {
         progress: number;
         dependencies: string;
         type: TaskType;
+        status?: string;
+		assignee?: string;
         custom_class?: string | undefined;
         additional_class?: string | undefined;
     }
