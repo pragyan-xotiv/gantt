@@ -58,6 +58,18 @@ export default class Gantt {
 
         // wrapper element
         this.$container = document.createElement('div');
+        let lastScrollTop = 0;
+        let lastScrollLeft = 0;
+        this.$container.addEventListener('scroll', (event) => {
+            let currentScrollTop = this.$container.scrollTop;
+            let currentScrollLeft = this.$container.scrollLeft;
+            if (currentScrollTop !== lastScrollTop) {
+                this.options['on_scroll'](event);
+            }
+
+            lastScrollTop = currentScrollTop;
+            lastScrollLeft = currentScrollLeft;
+        });
         this.$container.classList.add('gantt-container');
 
         const parent_element = this.$svg.parentElement;
