@@ -55,6 +55,7 @@ declare namespace Gantt {
         label?: boolean | undefined;
         popup_options?: PopupOptions,
         on_click?: ((task: EnrichedTask) => void) | undefined;
+        on_scroll?: ((task: Event) => void) | undefined;
         on_mouseover?: ((task: EnrichedTask) => void) | undefined;
         on_mouseout?: ((task: EnrichedTask) => void) | undefined;
         on_date_change?: ((task: EnrichedTask, start: Date, end: Date) => void) | undefined;
