@@ -202,7 +202,7 @@ export default class Bar {
         });
 
         $.on(this.group, 'mouseover', (e) => {
-            this.show_popup();
+            this.show_popup(e);
             this.gantt.trigger_event('mouseover', [this.task]);
         });
 
@@ -212,7 +212,7 @@ export default class Bar {
         });
     }
 
-    show_popup() {
+    show_popup(event = null) {
         if (this.gantt.bar_being_dragged) return;
 
         const start_date = date_utils.format(
@@ -232,6 +232,7 @@ export default class Bar {
             title: this.task.name,
             subtitle: subtitle,
             task: this.task,
+            event,
         });
     }
 
