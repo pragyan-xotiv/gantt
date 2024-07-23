@@ -64,8 +64,7 @@ export default class Popup {
             if (options.event) {
                 this.parent.style.left =
                     options.event.offsetX - width / 2 + 'px';
-                this.parent.style.top =
-                    options.event.offsetY - (height + 10) + 'px';
+                this.parent.style.top = position_meta.y - (height + 7) + 'px';
             } else {
                 this.parent.style.left =
                     position_meta.x + position_meta.width / 2 + 'px';
