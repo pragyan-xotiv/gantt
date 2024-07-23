@@ -1,7 +1,11 @@
 export default class Popup {
-    constructor(parent, custom_html) {
+    constructor(parent, custom_html, popup_options) {
         this.parent = parent;
         this.custom_html = custom_html;
+        this.popup_options = popup_options;
+        this.width = this.popup_options.width || 200;
+        this.height = this.popup_options.height || 56;
+        this.additional_pixel = this.popup_options.additional_pixel || 7;
         this.make();
     }
 
@@ -63,20 +67,23 @@ export default class Popup {
             const height = 56;
             if (options.event) {
                 this.parent.style.left =
-                    options.event.offsetX - width / 2 + 'px';
-                this.parent.style.top = position_meta.y - (height + 7) + 'px';
+                    options.event.offsetX - this.width / 2 + 'px';
+                this.parent.style.top =
+                    position_meta.y -
+                    (this.height + this.additional_pixel) +
+                    'px';
             } else {
                 this.parent.style.left =
                     position_meta.x + position_meta.width / 2 + 'px';
-                this.parent.style.top = position_meta.y - height + 'px';
+                this.parent.style.top = position_meta.y - this.height + 'px';
             }
-            this.parent.style.width = width + 'px';
-            this.parent.style.height = height + 'px';
+            this.parent.style.width = this.width + 'px';
+            this.parent.style.height = this.height + 'px';
             this.parent.style['background-color'] = '#AE3756';
 
             this.pointer.style.transform = 'rotateZ(360deg)';
-            this.pointer.style.left = width / 2 + 'px';
-            this.pointer.style.top = height + 'px';
+            this.pointer.style.left = this.width / 2 + 'px';
+            this.pointer.style.top = this.height + 'px';
             this.pointer.style['border-top-color'] = '#AE3756';
         }
 

@@ -53,12 +53,19 @@ declare namespace Gantt {
         restrict_dependency_movement?: boolean | undefined;
         progress_bar?: boolean | undefined;
         label?: boolean | undefined;
+        popup_options?: PopupOptions,
         on_click?: ((task: EnrichedTask) => void) | undefined;
         on_mouseover?: ((task: EnrichedTask) => void) | undefined;
         on_mouseout?: ((task: EnrichedTask) => void) | undefined;
         on_date_change?: ((task: EnrichedTask, start: Date, end: Date) => void) | undefined;
         on_progress_change?: ((task: EnrichedTask, progress: number) => void) | undefined;
         on_view_change?: ((mode: viewMode) => void) | undefined;
+    }
+
+    interface PopupOptions {
+        width?: number;
+        height?: number;
+        additional_pixel?: number;
     }
 
     type viewMode = 'Quarter Day' | 'Half Day' | 'Day' | 'Week' | 'Month' | 'Year';
