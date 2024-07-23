@@ -2,7 +2,7 @@ export default class Popup {
     constructor(parent, custom_html, popup_options) {
         this.parent = parent;
         this.custom_html = custom_html;
-        this.popup_options = popup_options;
+        this.popup_options = popup_options || {};
         this.width = this.popup_options.width || 200;
         this.height = this.popup_options.height || 56;
         this.additional_pixel = this.popup_options.additional_pixel || 7;
