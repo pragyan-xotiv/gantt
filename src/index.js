@@ -58,6 +58,7 @@ export default class Gantt {
 
         // wrapper element
         this.$container = document.createElement('div');
+        this.$container.id = 'chart';
         let lastScrollTop = 0;
         let lastScrollLeft = 0;
         this.$container.addEventListener('scroll', (event) => {
