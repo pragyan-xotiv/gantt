@@ -78,12 +78,12 @@ export default class Popup {
                 this.parent.style.top = position_meta.y - this.height + 'px';
             }
             this.parent.style.width = this.width + 'px';
-            this.parent.style.height = this.height + 'px';
+            this.parent.style.height = this.height - 4 + 'px';
             this.parent.style['background-color'] = '#AE3756';
 
             this.pointer.style.transform = 'rotateZ(360deg)';
             this.pointer.style.left = this.width / 2 + 'px';
-            this.pointer.style.top = this.height + 'px';
+            this.pointer.style.top = this.height - 4 + 'px';
             this.pointer.style['border-top-color'] = '#AE3756';
         }
 

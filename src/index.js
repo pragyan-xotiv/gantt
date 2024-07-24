@@ -349,7 +349,7 @@ export default class Gantt {
                 x: 0,
                 y: row_y,
                 width: row_width,
-                height: row_height,
+                height: row_height - 1,
                 class: 'grid-row',
                 append_to: rows_layer,
             });
