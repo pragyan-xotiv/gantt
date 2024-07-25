@@ -74,7 +74,6 @@ export default class Popup {
             this.parent.style['background-color'] = '#AE3756';
             this.parent.style.position = 'absolute';
             this.parent.style.zIndex = 2;
-
         }
 
         // show

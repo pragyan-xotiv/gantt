@@ -89,9 +89,15 @@ export default class Gantt {
         this.$container.appendChild(this.$svg);
 
         // popup wrapper
-        this.popup_wrapper = document.createElement('div');
-        this.popup_wrapper.classList.add('popup-wrapper');
-        document.body.appendChild(this.popup_wrapper);
+        const popup = document.getElementById('popup_wrapper_unique_id');
+        if (!popup) {
+            this.popup_wrapper = document.createElement('div');
+            this.popup_wrapper.classList.add('popup-wrapper');
+            this.popup_wrapper.id = 'popup_wrapper_unique_id';
+            document.body.appendChild(this.popup_wrapper);
+        } else {
+            this.popup_wrapper = popup;
+        }
     }
 
     setup_options(options) {
