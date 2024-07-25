@@ -44,7 +44,7 @@ export default class Gantt {
             );
         }
 
-        const chartElement = document.getElementById("chart");
+        const chartElement = document.getElementById('chart_unique_id');
         if (chartElement) {
             let grandParent = chartElement.parentNode;
             // Move all children of the parent element to the grandparent
