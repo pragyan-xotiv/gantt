@@ -12,15 +12,13 @@ export default class Popup {
     make() {
         this.parent.innerHTML = `
             <div class="title"></div>
-            <div class="subtitle"></div>
-            <div class="pointer"></div>
+            <div class="subtitle"></div>            
         `;
 
         this.hide();
 
         this.title = this.parent.querySelector('.title');
         this.subtitle = this.parent.querySelector('.subtitle');
-        this.pointer = this.parent.querySelector('.pointer');
     }
 
     show(options) {
@@ -34,9 +32,7 @@ export default class Popup {
 
         if (this.custom_html) {
             let html = this.custom_html(options.task);
-            html += '<div class="pointer"></div>';
             this.parent.innerHTML = html;
-            this.pointer = this.parent.querySelector('.pointer');
         } else {
             // set data
             this.title.innerHTML = options.title;
@@ -56,10 +52,6 @@ export default class Popup {
             this.parent.style.left =
                 position_meta.x + (position_meta.width + 10) + 'px';
             this.parent.style.top = position_meta.y + 'px';
-
-            this.pointer.style.transform = 'rotateZ(90deg)';
-            this.pointer.style.left = '-7px';
-            this.pointer.style.top = '2px';
         }
 
         if (options.position === 'cursor-position') {
@@ -67,9 +59,9 @@ export default class Popup {
             const height = 56;
             if (options.event) {
                 this.parent.style.left =
-                    options.event.offsetX - this.width / 2 + 'px';
+                    options.event.clientX - this.width / 2 + 'px';
                 this.parent.style.top =
-                    position_meta.y -
+                    options.event.clientY -
                     (this.height + this.additional_pixel) +
                     'px';
             } else {
@@ -80,11 +72,9 @@ export default class Popup {
             this.parent.style.width = this.width + 'px';
             this.parent.style.height = this.height - 4 + 'px';
             this.parent.style['background-color'] = '#AE3756';
+            this.parent.style.position = 'absolute';
+            this.parent.style.zIndex = 2;
 
-            this.pointer.style.transform = 'rotateZ(360deg)';
-            this.pointer.style.left = this.width / 2 + 'px';
-            this.pointer.style.top = this.height - 4 + 'px';
-            this.pointer.style['border-top-color'] = '#AE3756';
         }
 
         // show
