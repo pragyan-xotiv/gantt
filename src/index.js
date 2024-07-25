@@ -65,7 +65,7 @@ export default class Gantt {
             let currentScrollTop = this.$container.scrollTop;
             let currentScrollLeft = this.$container.scrollLeft;
             if (currentScrollTop !== lastScrollTop) {
-                this.options['on_scroll'](event);
+                this.options['on_scroll'] && this.options['on_scroll'](event);
             }
 
             lastScrollTop = currentScrollTop;
