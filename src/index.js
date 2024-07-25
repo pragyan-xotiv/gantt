@@ -44,6 +44,17 @@ export default class Gantt {
             );
         }
 
+        const chartElement = document.getElementById("chart");
+        if (chartElement) {
+            let grandParent = chartElement.parentNode;
+            // Move all children of the parent element to the grandparent
+            while (chartElement.firstChild) {
+                grandParent.insertBefore(chartElement.firstChild, chartElement);
+            }
+            // Remove the parent element
+            grandParent.removeChild(chartElement);
+        }
+
         // svg element
         if (!svg_element) {
             // create it
