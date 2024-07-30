@@ -701,6 +701,15 @@ export default class Gantt {
         $.on(this.$svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
             const bar_wrapper = $.closest('.bar-wrapper', element);
 
+            parent_bar_id = bar_wrapper.getAttribute('data-id');
+            const barDetails = this.get_bar(parent_bar_id);
+            if (
+                barDetails &&
+                barDetails.task &&
+                barDetails.task.type === 'milestone'
+            )
+                return;
+
             if (element.classList.contains('left')) {
                 is_resizing_left = true;
             } else if (element.classList.contains('right')) {
@@ -714,7 +723,6 @@ export default class Gantt {
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;
 
-            parent_bar_id = bar_wrapper.getAttribute('data-id');
             const ids = [parent_bar_id];
             if (this.options.restrict_dependency_movement) {
                 ids.push(...this.get_all_dependent_tasks(parent_bar_id));
