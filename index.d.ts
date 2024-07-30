@@ -53,9 +53,11 @@ declare namespace Gantt {
         restrict_dependency_movement?: boolean | undefined;
         progress_bar?: boolean | undefined;
         label?: boolean | undefined;
-        popup_options?: PopupOptions,
+        popup_options?: PopupOptions;
+        scrollLeft?: number;
+		scrollTop?: number;
         on_click?: ((task: EnrichedTask) => void) | undefined;
-        on_scroll?: ((task: Event) => void) | undefined;
+        on_scroll?: ((task: Event, leftScroll: number, topScroll: number) => void) | undefined;
         on_mouseover?: ((task: EnrichedTask) => void) | undefined;
         on_mouseout?: ((task: EnrichedTask) => void) | undefined;
         on_date_change?: ((task: EnrichedTask, start: Date, end: Date) => void) | undefined;
