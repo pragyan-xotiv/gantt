@@ -650,10 +650,6 @@ export default class Gantt {
     set_scroll_position() {
         const parent_element = this.$svg.parentElement;
         if (!parent_element) return;
-        if (this.options.scrollLeft) {
-            parent_element.scrollLeft = this.options.scrollLeft;
-            return;
-        }
 
         const hours_before_first_task = date_utils.diff(
             this.get_oldest_starting_date(),
@@ -667,6 +663,13 @@ export default class Gantt {
             this.options.column_width;
 
         parent_element.scrollLeft = scroll_pos;
+
+        if (this.options.scrollLeft) {
+            parent_element.scrollLeft = this.options.scrollLeft;
+        }
+        if (this.options.scrollLeft) {
+            parent_element.scrollTop = this.options.scrollTop;
+        }
     }
 
     bind_grid_click() {
