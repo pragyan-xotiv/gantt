@@ -28,6 +28,7 @@ declare namespace Gantt {
 		assignee?: string;
         custom_class?: string | undefined;
         additional_class?: string | undefined;
+        meta?: any
     }
 
     interface EnrichedTask extends Task {
