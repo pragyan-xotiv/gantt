@@ -168,11 +168,12 @@ $handle-color: #ddd !default;
 
 
 	& .grid-header {
-		background-color: transparent;
+		background-color: #191d36;
 		position: sticky;
 		top: 0;
 		left: 0;
 		z-index: 10;
+		border: 1px solid #2d355d;
 }
 
 & .lower-text,
@@ -190,17 +191,20 @@ $handle-color: #ddd !default;
 }
 
 & .lower-text {
-		font-size: 14px;
+		font-size: 12px;
 		position: absolute;
 		width: fit-content;
 		transform: translateX(-50%);
+		color: #ccd5ff !important;
+		font-weight: 400;
 }
 
 & .upper-text {
 		position: absolute;
 		width: fit-content;
-		font-weight: 500;
-		font-size: 16px;
+		font-weight: 400;
+		font-size: 12px;
+		color: #ccd5ff !important;
 }
 
 & .current-upper {
