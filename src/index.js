@@ -314,7 +314,7 @@ export default class Gantt {
 
     setup_layers() {
         this.layers = {};
-        const layers = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
+        const layers = ['grid', 'arrow', 'progress', 'bar', 'details', 'date'];
         // make group layers
         for (let layer of layers) {
             this.layers[layer] = createSVG('g', {
@@ -346,7 +346,7 @@ export default class Gantt {
             width: grid_width,
             height: grid_height,
             class: 'grid-background',
-            append_to: this.layers.grid,
+            append_to: this.layers.date,
         });
 
         $.attr(this.$svg, {
@@ -374,31 +374,120 @@ export default class Gantt {
                 append_to: rows_layer,
             });
 
-            createSVG('line', {
-                x1: 0,
-                y1: row_y + row_height,
-                x2: row_width,
-                y2: row_y + row_height,
-                class: 'row-line',
-                append_to: lines_layer,
-            });
-
             row_y += this.options.bar_height + this.options.padding;
         }
     }
 
     make_grid_header() {
-        const header_width = this.dates.length * this.options.column_width;
-        const header_height = this.options.header_height + 10;
-        createSVG('rect', {
-            x: 0,
-            y: 0,
-            width: header_width,
-            height: header_height,
-            class: 'grid-header',
-            append_to: this.layers.grid,
-        });
-    }
+			let $header = document.createElement('div');
+			$header.style.height = this.options.header_height + 10 + 'px';
+			$header.style.width =
+					this.dates.length * this.options.column_width + 'px';
+			$header.classList.add('grid-header');
+			this.$header = $header;
+			this.$container.insertBefore($header, this.$svg);
+
+			let $upper_header = document.createElement('div');
+			$upper_header.classList.add('upper-header');
+			this.$upper_header = $upper_header;
+			this.$header.appendChild($upper_header);
+
+			let $lower_header = document.createElement('div');
+			$lower_header.classList.add('lower-header');
+			this.$lower_header = $lower_header;
+			this.$header.appendChild($lower_header);
+
+			this.make_side_header();
+	}
+
+	make_side_header() {
+			let $side_header = document.createElement('div');
+			$side_header.classList.add('side-header');
+
+			// Create view mode change select
+			if (this.options.view_mode_select) {
+					const $select = document.createElement('select');
+					$select.classList.add('viewmode-select');
+
+					const $el = document.createElement('option');
+					$el.selected = true;
+					$el.disabled = true;
+					$el.textContent = 'Mode';
+					$select.appendChild($el);
+
+					for (const key in VIEW_MODE) {
+							const $option = document.createElement('option');
+							$option.value = VIEW_MODE[key];
+							$option.textContent = VIEW_MODE[key];
+							$select.appendChild($option);
+					}
+					// $select.value = this.options.view_mode
+					$select.addEventListener(
+							'change',
+							function () {
+									this.change_view_mode($select.value);
+							}.bind(this),
+					);
+					$side_header.appendChild($select);
+			}
+
+			// Create today button
+			if (this.options.today_button) {
+					let $today_button = document.createElement('button');
+					$today_button.classList.add('today-button');
+					$today_button.textContent = 'Today';
+					$today_button.onclick = this.scroll_today.bind(this);
+					$side_header.appendChild($today_button);
+					this.$today_button = $today_button;
+			}
+
+			this.$header.appendChild($side_header);
+			this.$side_header = $side_header;
+
+			window.addEventListener(
+					'scroll',
+					this.update_button_position.bind(this),
+			);
+			window.addEventListener(
+					'resize',
+					this.update_button_position.bind(this),
+			);
+	}
+
+	update_button_position() {
+		const containerRect = this.$container.getBoundingClientRect();
+		const buttonRect = this.$side_header.getBoundingClientRect();
+		const { left, y } = this.$header.getBoundingClientRect();
+
+		// Check if the button is scrolled out of the container vertically
+
+		if (
+				buttonRect.top < containerRect.top ||
+				buttonRect.bottom > containerRect.bottom
+		) {
+				this.$side_header.style.position = 'absolute';
+				this.$side_header.style.top = `${containerRect.scrollTop + buttonRect.top}px`;
+		} else {
+				this.$side_header.style.position = 'fixed';
+				this.$side_header.style.top = y + 10 + 'px';
+		}
+		const width = Math.min(
+				this.$header.clientWidth,
+				this.$container.clientWidth,
+		);
+
+		this.$side_header.style.left =
+				left +
+				this.$container.scrollLeft +
+				width -
+				this.$side_header.clientWidth +
+				'px';
+
+		// Update the left value on page resize
+		if (this.$today_button) {
+				this.$today_button.style.left = `${containerRect.left + 20}px`;
+		}
+}
 
     make_grid_ticks() {
         let tick_x = 0;
@@ -443,61 +532,126 @@ export default class Gantt {
         }
     }
 
-    make_grid_highlights() {
-        // highlight today's date
-        if (this.view_is(VIEW_MODE.DAY)) {
-            const x =
-                (date_utils.diff(date_utils.today(), this.gantt_start, 'hour') /
-                    this.options.step) *
-                this.options.column_width;
-            const y = 0;
+		//compute the horizontal x distance
+    computeGridHighlightDimensions(view_mode) {
+			let x = this.options.column_width / 2;
 
-            const width = this.options.column_width;
-            const height =
-                (this.options.bar_height + this.options.padding) *
-                    this.tasks.length +
-                this.options.header_height +
-                this.options.padding / 2;
+			if (this.view_is(VIEW_MODE.DAY)) {
+					let today = date_utils.today();
+					return {
+							x:
+									x +
+									(date_utils.diff(today, this.gantt_start, 'hour') /
+											this.options.step) *
+											this.options.column_width,
+							date: today,
+					};
+			}
 
-            createSVG('rect', {
-                x,
-                y,
-                width,
-                height,
-                class: 'today-highlight',
-                append_to: this.layers.grid,
-            });
-        }
-    }
+			for (let date of this.dates) {
+					const todayDate = new Date();
+					const startDate = new Date(date);
+					const endDate = new Date(date);
+					switch (view_mode) {
+							case VIEW_MODE.WEEK:
+									endDate.setDate(date.getDate() + 7);
+									break;
+							case VIEW_MODE.MONTH:
+									endDate.setMonth(date.getMonth() + 1);
+									break;
+							case VIEW_MODE.YEAR:
+									endDate.setFullYear(date.getFullYear() + 1);
+									break;
+					}
+					if (todayDate >= startDate && todayDate <= endDate) {
+							return { x, date: startDate };
+					} else {
+							x += this.options.column_width;
+					}
+			}
 
-    make_dates() {
-        for (let date of this.get_dates_to_draw()) {
-            createSVG('text', {
-                x: date.lower_x,
-                y: date.lower_y,
-                innerHTML: date.lower_text,
-                class: 'lower-text',
-                append_to: this.layers.date,
-            });
+			return { x }
+	}
 
-            if (date.upper_text) {
-                const $upper_text = createSVG('text', {
-                    x: date.upper_x,
-                    y: date.upper_y,
-                    innerHTML: date.upper_text,
-                    class: 'upper-text',
-                    append_to: this.layers.date,
-                });
+		make_grid_highlights() {
+			if (this.options.highlight_weekend) this.highlightWeekends();
 
-                // remove out-of-bound dates
-                if (
-                    $upper_text.getBBox().x2 > this.layers.grid.getBBox().width
-                ) {
-                    $upper_text.remove();
-                }
-            }
-        }
-    }
+			// highlight today's | week's | month's | year's
+			if (
+					this.view_is(VIEW_MODE.DAY) ||
+					this.view_is(VIEW_MODE.WEEK) ||
+					this.view_is(VIEW_MODE.MONTH) ||
+					this.view_is(VIEW_MODE.YEAR)
+			) {
+					// Used as we must find the _end_ of session if view is not Day
+					const { x: left, date } = this.computeGridHighlightDimensions(
+							this.options.view_mode,
+					);
+					if (!date || !this.dates.find((d) => d.getTime() == date.getTime())) return;
+					const top = this.options.header_height + this.options.padding / 2;
+					const height =
+							(this.options.bar_height + this.options.padding) *
+							this.tasks.length;
+					this.$current_highlight = this.create_el({
+							top,
+							left,
+							height,
+							classes: 'current-highlight',
+							append_to: this.$container,
+					});
+					let $today = document.getElementById(
+							date_utils.format(date).replaceAll(' ', '_'),
+					);
+					if ($today) {
+							$today.classList.add('current-date-highlight');
+							$today.style.top = +$today.style.top.slice(0, -2) - 4 + 'px';
+							$today.style.left = +$today.style.left.slice(0, -2) - 8 + 'px';
+					}
+			}
+	}
+
+		create_el({ left, top, width, height, id, classes, append_to }) {
+			let $el = document.createElement('div');
+			$el.classList.add(classes);
+			$el.style.top = top + 'px';
+			$el.style.left = left + 'px';
+			if (id) $el.id = id;
+			if (width) $el.style.width = height + 'px';
+			if (height) $el.style.height = height + 'px';
+			append_to.appendChild($el);
+			return $el;
+	}
+
+		make_dates() {
+			this.upper_texts_x = {};
+			this.get_dates_to_draw().forEach((date, i) => {
+					let $lower_text = this.create_el({
+							left: date.lower_x,
+							top: date.lower_y,
+							id: date.formatted_date,
+							classes: 'lower-text',
+							append_to: this.$lower_header,
+					});
+					$lower_text.innerText = date.lower_text;
+					$lower_text.style.left =
+							+$lower_text.style.left.slice(0, -2) + 'px';
+
+					if (date.upper_text) {
+							this.upper_texts_x[date.upper_text] = date.upper_x;
+							let $upper_text = document.createElement('div');
+							$upper_text.classList.add('upper-text');
+							$upper_text.style.left = date.upper_x + 'px';
+							$upper_text.style.top = date.upper_y + 'px';
+							$upper_text.innerText = date.upper_text;
+							this.$upper_header.appendChild($upper_text);
+
+							// remove out-of-bound dates
+							if (date.upper_x > this.layers.grid.getBBox().width) {
+									$upper_text.remove();
+							}
+					}
+			});
+	}
 
     get_dates_to_draw() {
         let last_date = null;
@@ -687,6 +841,7 @@ export default class Gantt {
     bind_bar_events() {
         let is_dragging = false;
         let x_on_start = 0;
+				let x_on_scroll_start = 0;
         let y_on_start = 0;
         let is_resizing_left = false;
         let is_resizing_right = false;
@@ -739,6 +894,73 @@ export default class Gantt {
                 $bar.finaldx = 0;
             });
         });
+
+				$.on(this.$container, 'scroll', (e) => {
+					let elements = document.querySelectorAll('.bar-wrapper');
+					let localBars = [];
+					const ids = [];
+					let dx;
+					if (x_on_scroll_start) {
+							dx = e.currentTarget.scrollLeft - x_on_scroll_start;
+					}
+
+					const daysSinceStart =
+							((e.currentTarget.scrollLeft / this.options.column_width) *
+									this.options.step) /
+							24;
+					let format_str = 'D MMM';
+					if (['Year', 'Month'].includes(this.options.view_mode))
+							format_str = 'YYYY';
+					else if (['Day', 'Week'].includes(this.options.view_mode))
+							format_str = 'MMMM';
+					else if (this.view_is('Half Day')) format_str = 'D';
+					else if (this.view_is('Hour')) format_str = 'D MMMM';
+
+					let currentUpper = date_utils.format(
+							date_utils.add(this.gantt_start, daysSinceStart, 'day'),
+							format_str,
+					);
+					const upperTexts = Array.from(
+							document.querySelectorAll('.upper-text'),
+					);
+					const $el = upperTexts.find(
+							(el) => el.textContent === currentUpper,
+					);
+					if ($el && !$el.classList.contains('current-upper')) {
+							const $current = document.querySelector('.current-upper');
+							if ($current) {
+									$current.classList.remove('current-upper');
+									$current.style.left =
+											this.upper_texts_x[$current.textContent] + 'px';
+									$current.style.top = this.options.header_height - 50 + 'px';
+							}
+
+							$el.classList.add('current-upper');
+							let dimensions = this.$svg.getBoundingClientRect();
+							$el.style.left =
+									dimensions.x + this.$container.scrollLeft + 10 + 'px';
+							$el.style.top =
+									dimensions.y + this.options.header_height - 50 + 'px';
+					}
+
+					Array.prototype.forEach.call(elements, function (el, i) {
+							ids.push(el.getAttribute('data-id'));
+					});
+
+					if (dx) {
+							localBars = ids.map((id) => this.get_bar(id));
+							if (this.options.auto_move_label) {
+									localBars.forEach((bar) => {
+											bar.update_label_position_on_horizontal_scroll({
+													x: dx,
+													sx: e.currentTarget.scrollLeft,
+											});
+									});
+							}
+					}
+
+					x_on_scroll_start = e.currentTarget.scrollLeft;
+			});
 
         $.on(this.$svg, 'mousemove', (e) => {
             if (!action_in_progress()) return;
