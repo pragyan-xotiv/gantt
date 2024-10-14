@@ -599,12 +599,15 @@ export default class Gantt {
             const height =
                 (this.options.bar_height + this.options.padding) *
                 this.tasks.length;
+            const existing = document.getElementById('current-highlight');
+            if (existing) existing?.remove();
             this.$current_highlight = this.create_el({
                 top,
                 left,
                 height,
                 classes: 'current-highlight',
                 append_to: this.$container,
+				id: 'current-highlight'
             });
             let $today = document.getElementById(
                 date_utils.format(date).replaceAll(' ', '_'),
